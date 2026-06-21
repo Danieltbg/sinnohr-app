@@ -1,0 +1,24 @@
+---
+description: Filament v5 admin panel conventions for HRIS Admin
+globs: app/Filament/**/*.php
+alwaysApply: false
+---
+
+# Filament Rules (Admin Panel)
+
+Purpose:
+
+- Standardize Filament implementation
+- Keep admin panel maintainable
+- Improve Cursor AI consistency
+- Preserve existing Filament structure
+- Reduce duplicated UI pattern
+
+---
+
+# Filament Structure
+
+Primary location:
+
+```txt
+app/Filament/Admin/

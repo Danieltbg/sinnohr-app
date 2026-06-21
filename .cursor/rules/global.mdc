@@ -1,0 +1,28 @@
+---
+description: Global convention for entire HRIS Admin codebase
+alwaysApply: true
+---
+
+# Global Rules
+
+Purpose:
+
+- Maintain consistent architecture
+- Reduce code inconsistency
+- Improve Cursor AI generation quality
+- Prevent unnecessary refactor
+- Preserve existing project pattern
+
+---
+
+# Core Rules
+
+## PHP Standard
+
+All PHP files MUST start with:
+
+```php
+declare(strict_types=1);
+```
+
+Target runtime for local/CI: **PHP 8.4+** (`composer.json`).

@@ -1,0 +1,26 @@
+---
+description: Lightweight project context for HRIS Admin Laravel + Filament
+alwaysApply: true
+---
+
+# HRIS Admin Context
+
+Purpose:
+
+- Reduce Cursor token usage
+- Provide fast project understanding
+- Preserve architecture consistency
+- Guide AI assistant toward existing patterns
+
+---
+
+# Tech Stack
+
+```txt
+Laravel 13
+PHP 8.4+
+Filament 5.5
+Laravel Sanctum
+Vite 7
+Tailwind CSS v4
+PHPUnit 12

@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Admin\Pages\EmployeeCompany;
+
+use App\Filament\Admin\Navigation\AdminNavigation;
+use App\Filament\Admin\Pages\BaseAdminPage;
+use Filament\Support\Icons\Heroicon;
+
+class Branch extends BaseAdminPage
+{
+    protected static ?string $title = 'Branch';
+
+    protected static ?string $navigationLabel = 'Branch';
+
+    protected static ?string $navigationParentItem = AdminNavigation::PARENT_COMPANY_MANAGEMENT;
+
+    protected static string|null|\BackedEnum $navigationIcon = Heroicon::OutlinedMapPin;
+
+    protected static string|\UnitEnum|null $navigationGroup = AdminNavigation::GROUP_EMPLOYEE_COMPANY;
+
+    protected static ?int $navigationSort = 11;
+}

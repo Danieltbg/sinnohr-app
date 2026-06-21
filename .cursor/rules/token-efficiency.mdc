@@ -1,0 +1,27 @@
+---
+description: Token and context efficiency rules for Cursor AI in HRIS Admin
+alwaysApply: true
+---
+
+# Token Efficiency Rules
+
+Purpose:
+
+- Reduce unnecessary token usage
+- Improve Cursor AI response quality
+- Minimize repeated project context
+- Keep prompts focused and actionable
+
+---
+
+# Primary References
+
+Before asking or generating code, prioritize reading:
+
+```txt
+CLAUDE.md
+context/*.md
+prompts/*.prompt.md
+snippets/*-snippet.md
+docs/08-core-domains/
+.cursor/rules/*.md

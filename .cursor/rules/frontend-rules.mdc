@@ -1,0 +1,27 @@
+---
+description: Frontend asset and Vite conventions for Laravel HRIS Admin
+globs: resources/**/*,vite.config.js
+alwaysApply: false
+---
+
+# Frontend Rules
+
+Purpose:
+
+- Standardize frontend structure
+- Keep Vite build maintainable
+- Preserve lightweight asset bundle
+- Improve Cursor AI consistency
+- Maintain Laravel + Filament integration
+
+---
+
+# Frontend Stack
+
+Frontend technologies:
+
+```txt
+Vite 7
+Tailwind CSS v4
+Laravel Vite Plugin
+Blade

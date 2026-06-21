@@ -1,0 +1,288 @@
+---
+description: Role-based access control rules for Admin and User roles across all application pages
+globs: ["**/Filament/**", "**/pages/admin/**", "**/pages/user/**", "**/pages/shared/**", "**/Policies/**", "**/Middleware/**", "**/Models/User*"]
+alwaysApply: false
+---
+
+# Role-Based Access Control — Admin & User
+
+## Arsitektur Role
+Aplikasi memiliki 2 role utama:
+- `admin` — akses penuh ke semua halaman + Master Data Management
+- `user` — akses terbatas ke halaman operasional pribadi
+
+---
+
+## Struktur Halaman
+
+```
+pages/
+├── shared/          # Publik, tidak perlu auth
+│   ├── Login
+│   ├── ForgotPassword
+│   └── ResetPassword
+├── admin/           # Role: admin only
+│   ├── Dashboard
+│   ├── Attendance
+│   ├── Leave
+│   ├── Notification
+│   ├── Offsite
+│   ├── Overtime
+│   ├── Permission
+│   ├── Permit
+│   ├── Profile
+│   ├── Update
+│   ├── WorkFromHome
+│   └── MasterDataManagement   # HANYA admin
+└── user/            # Role: user only
+    ├── Dashboard
+    ├── Attendance
+    ├── Leave
+    ├── Notification
+    ├── Offsite
+    ├── Overtime
+    ├── Permission
+    ├── Permit
+    ├── Profile
+    ├── Update
+    └── WorkFromHome
+```
+
+---
+
+## Matriks Akses Halaman
+
+| Halaman               | Admin | User |
+|-----------------------|-------|------|
+| Dashboard             | ✅    | ✅   |
+| Attendance            | ✅    | ✅   |
+| Leave                 | ✅    | ✅   |
+| Notification          | ✅    | ✅   |
+| Offsite               | ✅    | ✅   |
+| Overtime              | ✅    | ✅   |
+| Permission            | ✅    | ✅   |
+| Permit                | ✅    | ✅   |
+| Profile               | ✅    | ✅   |
+| Update                | ✅    | ✅   |
+| Work from Home        | ✅    | ✅   |
+| Master Data Mgmt      | ✅    | ❌   |
+
+---
+
+## Perbedaan Admin vs User per Halaman
+
+| Halaman        | Admin                                      | User                        |
+|----------------|--------------------------------------------|-----------------------------|
+| Dashboard      | Statistik semua karyawan, summary global   | Statistik pribadi           |
+| Attendance     | Lihat & kelola semua absensi karyawan      | Lihat & input absensi sendiri |
+| Leave          | Approve/reject pengajuan cuti              | Ajukan & lihat status cuti  |
+| Overtime       | Approve/reject lembur semua karyawan       | Ajukan & lihat status lembur|
+| Offsite        | Approve/reject, lihat semua               | Ajukan & lihat status       |
+| Work from Home | Approve/reject, lihat semua               | Ajukan & lihat status       |
+| Permission     | Approve/reject, lihat semua               | Ajukan & lihat status       |
+| Permit         | Approve/reject, lihat semua               | Ajukan & lihat status       |
+| Notification   | Kirim notifikasi ke user/grup              | Terima & baca notifikasi    |
+| Profile        | Edit profil sendiri + lihat profil user    | Edit profil sendiri         |
+| Update         | Kelola update/pengumuman aplikasi          | Lihat update/pengumuman     |
+| Master Data    | CRUD: karyawan, departemen, jabatan, dll   | Tidak ada akses             |
+
+---
+
+## Implementasi Laravel Filament v3
+
+### 1. Model User — Role Attribute
+```php
+// app/Models/User.php
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+protected function casts(): array
+{
+    return [
+        'role' => RoleEnum::class, // 'admin' | 'user'
+    ];
+}
+
+public function isAdmin(): bool
+{
+    return $this->role === RoleEnum::Admin;
+}
+
+public function isUser(): bool
+{
+    return $this->role === RoleEnum::User;
+}
+```
+
+### 2. Enum Role
+```php
+// app/Enums/RoleEnum.php
+<?php
+namespace App\Enums;
+
+enum RoleEnum: string
+{
+    case Admin = 'admin';
+    case User  = 'user';
+}
+```
+
+### 3. Panel Separation — Filament
+```php
+// app/Providers/Filament/AdminPanelProvider.php
+->authGuard('web')
+->authMiddleware([Authenticate::class])
+->login(CustomLogin::class)
+->path('admin')
+
+// app/Providers/Filament/UserPanelProvider.php
+->authGuard('web')
+->authMiddleware([Authenticate::class])
+->login(CustomLogin::class)
+->path('portal')
+```
+
+### 4. Redirect Setelah Login Berdasarkan Role
+```php
+// app/Filament/Pages/Auth/CustomLogin.php
+protected function getCredentialsFromFormData(array $data): array
+{
+    return [
+        'email'    => $data['email'],
+        'password' => $data['password'],
+    ];
+}
+
+public function authenticate(): ?LoginResponse
+{
+    $response = parent::authenticate();
+    $user = auth()->user();
+
+    return $user->isAdmin()
+        ? redirect('/admin/dashboard')
+        : redirect('/portal/dashboard');
+}
+```
+
+### 5. Middleware Role Guard
+```php
+// app/Http/Middleware/EnsureRole.php
+public function handle(Request $request, Closure $next, string $role): Response
+{
+    if (!auth()->check() || auth()->user()->role->value !== $role) {
+        abort(403, 'Akses ditolak.');
+    }
+    return $next($request);
+}
+```
+
+### 6. Policy — Contoh untuk Approval
+```php
+// app/Policies/LeavePolicy.php
+public function viewAny(User $user): bool
+{
+    return true; // semua bisa lihat
+}
+
+public function approve(User $user): bool
+{
+    return $user->isAdmin(); // hanya admin
+}
+
+public function create(User $user): bool
+{
+    return $user->isUser(); // hanya user biasa
+}
+```
+
+### 7. Filament Resource — Batasi Akses
+```php
+// Setiap Resource admin
+public static function canAccess(): bool
+{
+    return auth()->user()->isAdmin();
+}
+
+// Master Data — hanya admin
+public static function canAccess(): bool
+{
+    return auth()->user()?->role === RoleEnum::Admin;
+}
+```
+
+---
+
+## Navigasi — Sembunyikan Menu Berdasarkan Role
+
+```php
+// Di setiap Filament Page/Resource
+public static function shouldRegisterNavigation(): bool
+{
+    return auth()->user()?->isAdmin() ?? false;
+    // Ganti isAdmin() dengan isUser() untuk halaman user
+}
+```
+
+---
+
+## Konvensi Penamaan File
+
+```
+# Admin Resources
+app/Filament/Admin/Resources/LeaveResource.php
+app/Filament/Admin/Resources/MasterDataResource.php
+
+# User Resources  
+app/Filament/User/Resources/LeaveResource.php
+
+# Shared Pages
+app/Filament/Pages/Auth/CustomLogin.php
+app/Filament/Pages/Auth/ForgotPassword.php
+app/Filament/Pages/Auth/ResetPassword.php
+
+# Policies
+app/Policies/LeavePolicy.php
+app/Policies/OvertimePolicy.php
+app/Policies/AttendancePolicy.php
+```
+
+---
+
+## Database — Tabel Pendukung
+
+```
+users           → id, name, email, password, role (enum: admin|user), department_id, remember_token
+departments     → id, name                          [Master Data]
+positions       → id, name, department_id            [Master Data]
+attendances     → id, user_id, date, check_in, check_out, status
+leaves          → id, user_id, start_date, end_date, reason, status (pending|approved|rejected), approved_by
+overtimes       → id, user_id, date, duration, reason, status, approved_by
+offsites        → id, user_id, date, location, reason, status, approved_by
+wfh             → id, user_id, date, reason, status, approved_by
+permissions     → id, user_id, date, reason, status, approved_by
+permits         → id, user_id, date, type, reason, status, approved_by
+notifications   → id, user_id, title, message, read_at, created_at
+```
+
+---
+
+## Aturan Wajib — Jangan Dilanggar
+
+- Jangan tampilkan menu Master Data Management ke role `user`
+- Jangan izinkan `user` mengakses endpoint `/admin/*` — gunakan middleware
+- Semua approval action (approve/reject) hanya bisa dilakukan `admin`
+- `user` hanya bisa CRUD data miliknya sendiri (`where user_id = auth()->id()`)
+- Selalu gunakan Policy untuk logika akses, bukan hardcode `if role === admin` di controller
+- Redirect setelah login wajib sesuai role — jangan default ke satu URL
+
+---
+
+## Testing Checklist
+
+- [ ] Login admin → redirect ke `/admin/dashboard`
+- [ ] Login user → redirect ke `/portal/dashboard`
+- [ ] User akses `/admin/*` → 403 Forbidden
+- [ ] Admin lihat semua data karyawan di halaman Attendance
+- [ ] User hanya lihat data absensi milik sendiri
+- [ ] User tidak melihat menu Master Data Management
+- [ ] Admin bisa approve/reject Leave, Overtime, WFH, Offsite, Permission, Permit
+- [ ] User tidak bisa akses tombol approve/reject

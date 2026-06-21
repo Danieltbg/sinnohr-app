@@ -1,0 +1,195 @@
+```md
+# Filament Admin Panel Navigation Rules
+
+## Sidebar Structure
+
+Gunakan struktur sidebar berikut untuk seluruh Filament Resources dan Pages.
+
+Dashboard
+
+---- Employee & Company ----------
+Company Management
+├── Branch
+├── Divisi
+└── Team
+
+Employee Management
+└── Employee
+
+Recruitment
+
+---- Time & Attendance ----------
+Shift Management
+Attendance Management
+Visit Attendance
+Team Meeting
+Leave
+WFH Request
+
+---- Asset & Benefit ----------
+Asset Management
+
+---- Project Management & Tool ----------
+Clients
+
+
+---
+
+# Navigation Rules
+
+## Dashboard
+
+- Dashboard harus menjadi menu pertama
+- Gunakan icon:
+  - heroicon-o-home
+
+---
+
+# Employee & Company Group
+
+Gunakan navigation group:
+
+protected static ?string $navigationGroup = 'Employee & Company';
+
+## Company Management
+
+Gunakan cluster/menu parent.
+
+Submenu:
+- Branch
+- Divisi
+- Team
+
+Recommended icons:
+- Branch → heroicon-o-building-office
+- Divisi → heroicon-o-squares-2x2
+- Team → heroicon-o-user-group
+
+## Employee Management
+
+Submenu:
+- Employee
+
+Recommended icon:
+- heroicon-o-users
+
+## Recruitment
+
+Standalone menu:
+- Recruitment
+
+Recommended icon:
+- heroicon-o-briefcase
+
+---
+
+# Time & Attendance Group
+
+Gunakan navigation group:
+
+protected static ?string $navigationGroup = 'Time & Attendance';
+
+Menu:
+- Shift Management
+- Attendance Management
+- Visit Attendance
+- Team Meeting
+- Leave
+
+Recommended icons:
+- Shift Management → heroicon-o-clock
+- Attendance Management → heroicon-o-calendar-days
+- Visit Attendance → heroicon-o-map-pin
+- Team Meeting → heroicon-o-chat-bubble-left-right
+- Leave → heroicon-o-document-text
+
+---
+
+# Navigation Sort
+
+Gunakan urutan berikut:
+
+protected static ?int $navigationSort = 1;
+
+Suggested order:
+
+- Dashboard → 1
+- Branch → 10
+- Divisi → 11
+- Team → 12
+- Employee → 20
+- Recruitment → 30
+- Shift Management → 40
+- Attendance Management → 41
+- Visit Attendance → 42
+- Team Meeting → 43
+- Leave → 44
+
+---
+
+# Resource Naming Convention
+
+Gunakan pattern berikut:
+
+- BranchResource
+- DivisiResource
+- TeamResource
+- EmployeeResource
+- RecruitmentResource
+- ShiftManagementResource
+- AttendanceManagementResource
+- VisitAttendanceResource
+- TeamMeetingResource
+- LeaveResource
+
+---
+
+# Filament Resource Rules
+
+- Gunakan Resource bawaan Filament
+- Gunakan Table + Form schema Filament
+- Hindari custom blade jika tidak perlu
+- Gunakan relation manager untuk relasi data
+- Gunakan soft delete jika applicable
+- Gunakan eager loading untuk mencegah N+1 query
+
+---
+
+# UI/UX Rules
+
+- Gunakan icon Heroicons bawaan Filament
+- Gunakan badge count hanya jika diperlukan
+- Sidebar harus tetap clean dan minimal
+- Hindari nested menu lebih dari 2 level
+- Gunakan plural label yang konsisten
+
+---
+
+# Coding Rules
+
+- Ikuti struktur Laravel + Filament v3
+- Jangan hardcode URL
+- Gunakan route/resource Filament
+- Gunakan policy Laravel untuk authorization
+- Gunakan form validation bawaan Filament
+
+---
+
+# Security Rules
+
+- Semua resource harus menggunakan policy
+- Gunakan auth middleware Filament
+- Jangan expose sensitive field di table
+- Gunakan searchable hanya pada field aman
+
+---
+
+# AI Generation Instruction
+
+Saat generate resource baru:
+- Selalu tempatkan menu sesuai struktur sidebar ini
+- Gunakan navigation group yang benar
+- Gunakan icon yang konsisten
+- Gunakan navigation sort sesuai urutan
+- Jangan membuat group/menu baru tanpa kebutuhan jelas
+```

@@ -1,0 +1,34 @@
+---
+description: Security conventions for Laravel API and Filament HRIS Admin
+globs: app/**/*.php,routes/**/*.php,config/**/*.php
+alwaysApply: false
+---
+
+# Security Rules
+
+Purpose:
+
+- Protect employee and HR data
+- Prevent common Laravel security issues
+- Standardize secure development practice
+- Improve Cursor AI security consistency
+
+---
+
+# Secret Management
+
+Rules:
+
+- never commit `.env`
+- never hardcode API key/token/password
+- use environment variable
+- use config() outside config file
+- separate environment credential per environment
+
+Never commit:
+
+```txt
+.env
+.env.production
+service-account.json
+private.key

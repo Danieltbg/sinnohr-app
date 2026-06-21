@@ -1,0 +1,36 @@
+---
+description: HRIS Admin architecture rules for Laravel + Filament + API
+globs: app/**/*.php
+alwaysApply: true
+---
+
+# Architecture Rules
+
+Purpose:
+
+- Maintain clean architecture
+- Keep business logic reusable
+- Standardize Laravel + Filament implementation
+- Improve Cursor AI consistency
+- Reduce architecture drift
+
+---
+
+# Responsibility Flow
+
+Architecture flow:
+
+```txt
+HTTP Request
+    ↓
+Route
+    ↓
+Controller / Filament Resource
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Model
+    ↓
+Database

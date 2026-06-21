@@ -1,0 +1,24 @@
+---
+description: Backend Laravel conventions for HRIS Admin
+globs: app/**/*.php,routes/**/*.php,bootstrap/**/*.php
+alwaysApply: true
+---
+
+# Backend Rules (Laravel)
+
+Purpose:
+
+- Standardize backend implementation
+- Keep architecture maintainable
+- Improve Cursor AI consistency
+- Reduce duplicated logic
+- Preserve existing Laravel patterns
+
+---
+
+# PHP Standards
+
+Use:
+
+```txt
+PSR-12

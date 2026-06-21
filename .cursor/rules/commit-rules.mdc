@@ -1,0 +1,23 @@
+---
+description: Commit convention and change scope rules for HRIS Admin
+alwaysApply: true
+---
+
+# Commit Rules
+
+Purpose:
+
+- Keep git history clean
+- Improve review quality
+- Reduce noisy commit
+- Help AI assistant generate focused change
+- Maintain consistent repository history
+
+---
+
+# Commit Format
+
+Preferred format:
+
+```txt
+type(scope): short description

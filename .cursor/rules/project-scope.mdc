@@ -1,0 +1,89 @@
+---
+description: Project scope, ignore paths, and coding guidance for PHP/Laravel HRIS
+alwaysApply: true
+---
+
+# Project Scope
+
+Focus only on:
+
+- app/
+- routes/
+- config/
+- resources/
+- database/
+- modules/
+- public/index.php
+
+# Ignore Dependencies
+
+Never scan:
+
+- vendor/
+- node_modules/
+- bower_components/
+
+# Ignore Generated Files
+
+Never read generated or compiled files:
+
+- public/build/
+- dist/
+- build/
+- target/
+- bootstrap/cache/
+- storage/framework/
+- storage/cache/
+
+# Ignore Logs
+
+Never scan:
+
+- storage/logs/
+- logs/
+- *.log
+
+# Ignore Environment Files
+
+Never read:
+
+- .env
+- .env.*
+- *.key
+
+# Ignore Version Control
+
+Never scan:
+
+- .git/
+
+# Ignore Media Files
+
+Never scan media or binary files:
+
+- *.png
+- *.jpg
+- *.jpeg
+- *.webp
+- *.mp4
+- *.mov
+- *.zip
+- *.tar
+- *.gz
+
+# Coding Guidance
+
+Prefer:
+
+- existing project patterns
+- service classes
+- repository pattern if available
+- Laravel conventions
+- reusable functions
+- minimal file changes
+
+Avoid:
+
+- unnecessary refactors
+- changing unrelated files
+- scanning the whole repository

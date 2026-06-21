@@ -1,0 +1,117 @@
+﻿# =========================
+# Dependencies
+# =========================
+vendor
+node_modules
+bower_components
+
+# =========================
+# Build / Cache
+# =========================
+dist
+build
+target
+.cache
+.tmp
+tmp
+temp
+
+# =========================
+# Logs
+# =========================
+logs
+*.log
+storage/logs
+storage/debugbar
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Laravel
+# =========================
+bootstrap/cache
+storage/framework
+storage/app/public
+public/storage
+
+# =========================
+# Testing / Coverage
+# =========================
+coverage
+.phpunit.result.cache
+
+# =========================
+# Docker
+# =========================
+docker-data
+docker-volumes
+docker/mysql
+docker/postgres
+
+# =========================
+# IDE / Editor
+# =========================
+.idea
+.vscode
+*.swp
+*.swo
+
+# =========================
+# Git
+# =========================
+.git
+
+# =========================
+# Environment
+# =========================
+.env
+.env.*
+*.key
+
+# =========================
+# Generated Files
+# =========================
+public/build
+public/hot
+public/dist
+
+# =========================
+# Composer
+# =========================
+composer.phar
+
+# =========================
+# Frontend
+# =========================
+.next
+.nuxt
+.svelte-kit
+
+# =========================
+# Binary / Archive
+# =========================
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+
+# =========================
+# Database Dumps
+# =========================
+*.sql
+*.dump
+*.bak
+
+# =========================
+# Media
+# =========================
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.png
+*.jpg
+*.jpeg
+*.webp

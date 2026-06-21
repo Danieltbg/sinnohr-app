@@ -1,0 +1,337 @@
+```md
+# Filament HRM Dashboard Rules
+
+## Dashboard Overview
+
+Gunakan dashboard layout modern seperti HRM / Employee Management System.
+
+Style:
+- Clean
+- Soft card UI
+- Rounded corner
+- Minimal shadow
+- Light background
+- Responsive grid
+- KPI widgets
+- Attendance widget
+- Project summary widget
+
+---
+
+# Dashboard Structure
+
+## Top Header
+
+Title:
+
+Dashboard - PT Pratesis
+
+Gunakan:
+- bold heading
+- left aligned
+- Filament default typography
+
+---
+
+# KPI Statistics Cards
+
+Gunakan stats overview cards dengan ukuran konsisten.
+
+## Card Style
+
+- Rounded XL
+- Soft background
+- Minimal shadow
+- Padding large
+- Icon di kanan bawah
+- Value besar
+- Label uppercase
+
+Gunakan warna:
+- cyan
+- teal
+- emerald
+- sky
+
+---
+
+# KPI Widgets
+
+## Employee
+
+Label:
+EMPLOYEES
+
+Icon:
+heroicon-o-users
+
+Description:
+Total seluruh employee aktif
+
+---
+
+## Department
+
+Label:
+DEPARTMENT
+
+Icon:
+heroicon-o-square-3-stack-3d
+
+Description:
+Total department/divisi
+
+---
+
+## Holidays
+
+Label:
+HOLIDAYS
+
+Icon:
+heroicon-o-umbrella
+
+Description:
+Jumlah hari libur
+
+---
+
+## Paid Leaves
+
+Label:
+PAID LEAVES
+
+Icon:
+heroicon-o-document-text
+
+Description:
+Total cuti berbayar
+
+---
+
+## On Leaves Today
+
+Label:
+ON LEAVES TODAY
+
+Icon:
+heroicon-o-clipboard-document
+
+Description:
+Employee cuti hari ini
+
+---
+
+## Pending Leaves
+
+Label:
+PENDING LEAVES
+
+Icon:
+heroicon-o-bookmark
+
+Description:
+Approval leave pending
+
+---
+
+## Check In Today
+
+Label:
+CHECK IN TODAY
+
+Icon:
+heroicon-o-arrow-right-on-rectangle
+
+Description:
+Total employee check-in
+
+---
+
+## Check Out Today
+
+Label:
+CHECK OUT TODAY
+
+Icon:
+heroicon-o-arrow-left-on-rectangle
+
+Description:
+Total employee check-out
+
+---
+
+# Attendance Clock Widget
+
+Gunakan widget khusus attendance.
+
+## Features
+
+- Analog clock
+- Current date
+- Check In button
+- Check Out button
+- Status jam masuk/pulang
+
+## Style
+
+- Card lebih tinggi
+- Clock center aligned
+- Button rounded
+- Responsive
+
+---
+
+# Project Management Section
+
+Gunakan section kedua:
+
+Title:
+Project Management
+
+---
+
+# Project Widgets
+
+## Project Detail
+
+Gunakan:
+- line chart
+- area chart
+- progress chart
+
+Data:
+- progress project
+- project timeline
+- completion rate
+
+---
+
+## Project Summary
+
+Widget:
+PROJECT
+
+Icon:
+heroicon-o-square-3-stack-3d
+
+Description:
+Total seluruh project
+
+---
+
+## Pending Project
+
+Widget:
+PENDING PROJECT
+
+Icon:
+heroicon-o-square-3-stack-3d
+
+Description:
+Project pending
+
+---
+
+# Layout Rules
+
+## Grid
+
+Gunakan:
+- responsive grid
+- 4 column desktop
+- 2 column tablet
+- 1 column mobile
+
+---
+
+# Filament Widget Rules
+
+Gunakan:
+- StatsOverviewWidget
+- ChartWidget
+- TableWidget
+- Custom Widget jika diperlukan
+
+---
+
+# UI/UX Rules
+
+- Hindari warna terlalu gelap
+- Gunakan whitespace cukup
+- Gunakan icon Heroicons
+- Semua card memiliki tinggi konsisten
+- Hover effect halus
+- Responsive mobile friendly
+
+---
+
+# Typography Rules
+
+- Label:
+  uppercase
+  small text
+  semibold
+
+- Value:
+  besar
+  bold
+
+- Section title:
+  xl
+  bold
+
+---
+
+# Dashboard Coding Rules
+
+- Gunakan eager loading
+- Hindari query berulang
+- Cache statistik jika perlu
+- Gunakan service class untuk aggregation data
+
+---
+
+# Widget Naming Convention
+
+Gunakan nama berikut:
+
+EmployeeStatsWidget
+DepartmentStatsWidget
+HolidayStatsWidget
+LeaveStatsWidget
+AttendanceWidget
+ProjectChartWidget
+ProjectSummaryWidget
+
+---
+
+# Filament Dashboard Generation Rules
+
+Saat generate dashboard:
+- Gunakan layout seperti HRM modern
+- Gunakan card KPI
+- Gunakan attendance widget
+- Gunakan project section
+- Gunakan responsive grid
+- Gunakan icon konsisten
+- Gunakan soft UI design
+- Jangan gunakan table besar di atas dashboard
+
+---
+
+# Performance Rules
+
+- Semua statistik harus optimized
+- Gunakan count query sederhana
+- Hindari N+1 query
+- Gunakan lazy loading untuk chart jika perlu
+
+---
+
+# Security Rules
+
+- Semua widget harus mengikuti policy user
+- Data dashboard harus sesuai role user
+- Jangan tampilkan data sensitif tanpa authorization
+```

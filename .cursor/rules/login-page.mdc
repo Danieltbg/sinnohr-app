@@ -1,0 +1,137 @@
+Create a custom Login Page for Laravel Filament v3 with the following requirements:
+
+## Stack
+- Laravel 10+ with Filament v3
+- Livewire (built-in Filament)
+- Tailwind CSS (Filament default)
+- Alpine.js for show/hide password toggle
+
+## Implementation Approach
+Extend Filament's default login page — do NOT build from scratch.
+Override only what's necessary using Filament's official customization API.
+
+## File Structure
+app/
+├── Filament/
+│   └── Pages/
+│       └── Auth/
+│           └── CustomLogin.php        # Extended login page
+resources/
+├── views/
+│   └── filament/
+│       └── pages/
+│           └── auth/
+│               └── custom-login.blade.php  # Custom blade (if needed)
+app/
+└── Providers/
+└── Filament/
+└── AdminPanelProvider.php     # Register custom login page
+
+## Functional Requirements
+
+### Form Fields
+- Email field: type email, label "Email", required
+- Password field: type password, label "Password", required, min 8 characters
+- Remember Me: checkbox "Ingat Saya", uses Laravel's remember token
+- Show/Hide Password: toggle via Alpine.js (x-data, x-bind:type, @click)
+
+### Validation Rules
+- Email: required | email format (valid RFC email)
+- Password: required | min:8
+- Trigger validation on submit
+- Show field-level error messages below each input
+
+### Error Handling
+- Invalid credentials → show notification or inline error:
+  "User dan password tidak ditemukan"
+- Use Filament's built-in `$this->throwFailureValidationException()` for consistency
+
+### Redirect
+- On success → redirect to Filament panel dashboard (`/admin` or configured panel path)
+- If user already authenticated → auto-redirect to dashboard on page load
+
+## Code — Required Patterns
+
+### app/Filament/Pages/Auth/CustomLogin.php
+```php
+<?php
+
+namespace App\Filament\Pages\Auth;
+
+use Filament\Pages\Auth\Login as BaseLogin;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Checkbox;
+use Illuminate\Validation\ValidationException;
+
+class CustomLogin extends BaseLogin
+{
+    protected function getForms(): array
+    {
+        return [
+            'form' => $this->form(
+                $this->makeForm()
+                    ->schema([
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->email()
+                            ->required()
+                            ->autocomplete()
+                            ->autofocus(),
+
+                        TextInput::make('password')
+                            ->label('Password')
+                            ->password()
+                            ->revealable()   // Show/hide toggle bawaan Filament v3
+                            ->required()
+                            ->minLength(8),
+
+                        Checkbox::make('remember')
+                            ->label('Ingat Saya'),
+                    ])
+                    ->statePath('data'),
+            ),
+        ];
+    }
+
+    protected function throwFailureValidationException(): never
+    {
+        throw ValidationException::withMessages([
+            'data.email' => 'User dan password tidak ditemukan.',
+        ]);
+    }
+}
+```
+
+### app/Providers/Filament/AdminPanelProvider.php
+```php
+->login(App\Filament\Pages\Auth\CustomLogin::class)
+```
+
+## UI/UX Requirements
+- Gunakan Filament default layout (jangan override layout utama)
+- Tambahkan logo aplikasi di atas form login (via `$this->getHeading()` atau panel config)
+- Responsive by default (Filament sudah handle)
+- Gunakan `->revealable()` bawaan Filament untuk show/hide password — JANGAN buat manual kecuali perlu custom icon
+
+## Security Requirements
+- Gunakan Laravel's built-in throttle login (sudah ada di Filament)
+- Jangan simpan password di session atau log
+- Remember Me menggunakan Laravel remember_token di tabel users
+- Pastikan kolom `remember_token` ada di tabel users (default migration Laravel)
+
+## Anti-Pattern — Hindari
+- Jangan override seluruh login page jika hanya perlu tambah field kecil
+- Jangan gunakan custom Blade untuk hal yang bisa di-handle via PHP class
+- Jangan bypass `throwFailureValidationException()` — gunakan method ini untuk konsistensi error handling Filament
+- Jangan hardcode credential
+- Jangan skip `->email()` rule pada field email
+
+## Testing Checklist
+- [ ] Email kosong → error "The email field is required"
+- [ ] Format email salah → error "The email field must be a valid email address"
+- [ ] Password < 8 karakter → error validasi
+- [ ] Credential salah → "User dan password tidak ditemukan"
+- [ ] Credential benar → redirect ke /admin (atau panel path)
+- [ ] Remember Me dicentang → cookie remember aktif
+- [ ] Show/hide password toggle berfungsi
+- [ ] Sudah login → akses /login auto-redirect ke dashboard

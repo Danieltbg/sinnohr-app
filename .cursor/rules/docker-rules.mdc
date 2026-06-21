@@ -1,0 +1,24 @@
+---
+description: Docker and containerization rules for HRIS Admin
+globs: Dockerfile,.dockerignore,docker-compose.yml
+alwaysApply: false
+---
+
+# Docker Rules
+
+Purpose:
+
+- Standardize container build
+- Improve Docker layer caching
+- Reduce image size
+- Improve production consistency
+- Help Cursor AI follow existing deployment strategy
+
+---
+
+# Docker Architecture
+
+Project uses:
+
+```txt
+Multi-stage Docker build

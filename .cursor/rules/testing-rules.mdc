@@ -1,0 +1,26 @@
+---
+description: PHPUnit testing strategy and conventions for HRIS Admin
+globs: tests/**/*.php
+alwaysApply: false
+---
+
+# Testing Rules
+
+Purpose:
+
+- Maintain application stability
+- Standardize testing structure
+- Prevent regression
+- Improve Cursor AI consistency
+- Ensure predictable behavior across API and Filament
+
+---
+
+# Test Stack
+
+Testing tools:
+
+```txt
+PHPUnit 12
+Laravel Test Framework
+SQLite / Testing Database
