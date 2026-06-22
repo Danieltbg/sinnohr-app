@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TimeTracker\Teams\Pages;
 
 use App\Filament\Admin\Resources\TimeTracker\Teams\TeamResource;
+use App\Models\Team;
 use App\Models\User;
 use App\Notifications\TeamAssignmentNotification;
 use App\Notifications\TeamLeadershipInvitation;
@@ -27,6 +28,12 @@ class CreateTeam extends CreateRecord
             NotificationFacade::sendNow($leader, new TeamLeadershipInvitation($team));
         }
 
+        $this->sendMemberNotifications($team);
+    }
+
+    private function sendMemberNotifications(Team $team): void
+    {
+        $leader = $team->leader;
         $memberIds = collect($team->members->pluck('id'))
             ->merge(data_get($this->data, 'members', []))
             ->filter()

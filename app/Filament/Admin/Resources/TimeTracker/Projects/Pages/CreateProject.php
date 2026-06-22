@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TimeTracker\Projects\Pages;
 
 use App\Filament\Admin\Resources\TimeTracker\Projects\ProjectResource;
+use App\Models\Project;
+use App\Models\Team;
 use App\Models\User;
 use App\Notifications\ProjectTeamAssignmentNotification;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
@@ -26,6 +28,11 @@ class CreateProject extends CreateRecord
             return;
         }
 
+        $this->notifyAssignedTeam($project, $team);
+    }
+
+    private function notifyAssignedTeam(Project $project, Team $team): void
+    {
         $leader = $team->leader;
         $leaderName = $leader?->name ?? 'Unknown';
 
