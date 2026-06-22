@@ -18,6 +18,7 @@ class TimeEntry extends Model
         'duration',
         'is_billable',
         'is_overtime',
+        'tags',
         'date',
     ];
 
@@ -30,6 +31,7 @@ class TimeEntry extends Model
             'is_billable' => 'boolean',
             'is_overtime' => 'boolean',
             'date' => 'date',
+            'tags' => 'array',
         ];
     }
 

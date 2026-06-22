@@ -29,6 +29,19 @@ class LiveTimeTracker extends Component
 
     public string $projectSearch = '';
 
+    public array $selectedTags = [];
+
+    public bool $showTagsDropdown = false;
+
+    public const array TAGS = [
+        'Meeting & Discussion',
+        'Assessment & Review',
+        'Project & Task',
+        'Administration & Report',
+        'Training & Development',
+        'Operational & Support',
+    ];
+
     public function mount(): void
     {
         $this->restoreTimerState();
@@ -36,9 +49,16 @@ class LiveTimeTracker extends Component
 
     public function startTimer(): void
     {
+        $this->validate([
+            'selectedTags' => ['required', 'array', 'min:1', 'max:3'],
+            'selectedTags.*' => ['string', 'in:Meeting & Discussion,Assessment & Review,Project & Task,Administration & Report,Training & Development,Operational & Support'],
+        ]);
+
         $this->isRunning = true;
         $this->startedAt = Carbon::now('Asia/Jakarta')->toISOString();
         $this->saveTimerState();
+
+        $this->resetErrorBag();
 
         $this->dispatch('timer-started', startedAt: $this->startedAt);
     }
@@ -65,14 +85,7 @@ class LiveTimeTracker extends Component
         $end = Carbon::now('Asia/Jakarta');
         $duration = (int) $start->diffInSeconds($end);
 
-        $this->validate([
-            'isBillable' => 'nullable|boolean',
-            'isOvertime' => 'nullable|boolean',
-        ]);
-
         $project = Project::where('name', $this->selectedProject)->first();
-        $isBillable = $this->isBillable ?? false;
-        $isOvertime = $this->isOvertime ?? false;
 
         TimeEntry::create([
             'user_id' => auth()->id(),
@@ -81,8 +94,9 @@ class LiveTimeTracker extends Component
             'start_time' => $start,
             'end_time' => $end,
             'duration' => $duration,
-            'is_billable' => $isBillable,
-            'is_overtime' => $isOvertime,
+            'is_billable' => $this->isBillable,
+            'is_overtime' => $this->isOvertime,
+            'tags' => $this->selectedTags,
             'date' => $start->format('Y-m-d'),
         ]);
 
@@ -90,9 +104,12 @@ class LiveTimeTracker extends Component
         $this->startedAt = null;
         $this->taskDescription = '';
         $this->selectedProject = '';
+        $this->selectedTags = [];
         $this->isBillable = false;
         $this->isOvertime = false;
         $this->saveTimerState();
+
+        $this->resetErrorBag();
 
         Notification::make()
             ->title('Time entry saved')
@@ -171,8 +188,21 @@ class LiveTimeTracker extends Component
 
         $this->taskDescription = $entry->description ?? '';
         $this->selectedProject = $entry->project_id !== null ? ($entry->project->name ?? '') : '';
+        $this->selectedTags = $entry->tags ?? [];
         $this->isBillable = $entry->is_billable;
         $this->isOvertime = $entry->is_overtime;
+    }
+
+    public function toggleTag(string $tag): void
+    {
+        if (in_array($tag, $this->selectedTags, true)) {
+            $this->selectedTags = array_values(array_filter(
+                $this->selectedTags,
+                fn (string $t): bool => $t !== $tag,
+            ));
+        } else {
+            $this->selectedTags[] = $tag;
+        }
     }
 
     public function selectProject(string $project): void
@@ -264,6 +294,7 @@ class LiveTimeTracker extends Component
         session()->put('time_tracker_project', $this->selectedProject);
         session()->put('time_tracker_billable', $this->isBillable);
         session()->put('time_tracker_overtime', $this->isOvertime);
+        session()->put('time_tracker_tags', $this->selectedTags);
     }
 
     private function restoreTimerState(): void
@@ -274,5 +305,6 @@ class LiveTimeTracker extends Component
         $this->selectedProject = (string) session()->get('time_tracker_project', '');
         $this->isBillable = (bool) session()->get('time_tracker_billable', false);
         $this->isOvertime = (bool) session()->get('time_tracker_overtime', false);
+        $this->selectedTags = (array) session()->get('time_tracker_tags', []);
     }
 }

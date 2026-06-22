@@ -16,23 +16,34 @@ class CreateTeam extends CreateRecord
     protected function afterCreate(): void
     {
         $team = $this->record;
+        $team->load(['leader', 'members']);
 
-        $recipients = collect([$team->leader_id])
-            ->merge($team->members->pluck('id'))
-            ->unique()
-            ->filter();
+        $leader = $team->leader;
+        $members = $team->members;
 
-        foreach ($recipients as $recipientId) {
-            $user = User::find($recipientId);
-
-            if ($user === null) {
-                continue;
-            }
-
+        if ($leader !== null) {
             Notification::make()
-                ->title('You have been assigned to Team: '.$team->name)
-                ->body('Check your new project assignment details now.')
-                ->sendToDatabase($user);
+                ->title('Team Leadership')
+                ->body('You have been assigned as the leader of team: '.$team->name)
+                ->sendToDatabase($leader);
+        }
+
+        $memberIds = $members->pluck('id')->toArray();
+        $leaderId = $leader?->id;
+
+        if ($leaderId !== null) {
+            $memberIds = array_diff($memberIds, [$leaderId]);
+        }
+
+        $memberUsers = User::whereIn('id', $memberIds)->get();
+
+        $leaderName = $leader?->name ?? 'Unknown';
+
+        foreach ($memberUsers as $member) {
+            Notification::make()
+                ->title('Team Assignment')
+                ->body('You have been added to team '.$team->name.' led by '.$leaderName)
+                ->sendToDatabase($member);
         }
     }
 }
