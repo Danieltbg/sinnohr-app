@@ -10,4 +10,3 @@ class CreateTag extends CreateConfigurationEntry
 {
     protected static string $resource = TagResource::class;
 }
-

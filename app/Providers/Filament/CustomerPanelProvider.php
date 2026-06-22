@@ -14,12 +14,14 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class CustomerPanelProvider extends PanelProvider
@@ -39,8 +41,41 @@ class CustomerPanelProvider extends PanelProvider
             ])
             ->topNavigation()
             ->maxContentWidth(Width::Full)
+            ->databaseNotifications()
             ->unsavedChangesAlerts()
             ->darkMode(false)
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn (): HtmlString => new HtmlString(
+                    <<<'HTML'
+<style>
+.fi-no-notification-read-ctn .fi-no-notification-title {
+    text-decoration: line-through !important;
+    color: #9ca3af !important;
+}
+</style>
+HTML
+                ),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn (): HtmlString => new HtmlString(
+                    <<<'HTML'
+<script>
+document.addEventListener('click', function(e) {
+    const title = e.target.closest('.fi-no-notification-title');
+    if (!title) return;
+    const ctn = title.closest('.fi-no-notification-read-ctn');
+    if (ctn) return;
+    const el = title.closest('[x-data]');
+    if (el && window.Alpine) {
+        window.Alpine.$data(el)?.markAsRead?.();
+    }
+});
+</script>
+HTML
+                ),
+            )
             ->discoverResources(in: app_path('Filament/User/Resources'), for: 'App\\Filament\\User\\Resources')
             ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\\Filament\\User\\Pages')
             ->pages([

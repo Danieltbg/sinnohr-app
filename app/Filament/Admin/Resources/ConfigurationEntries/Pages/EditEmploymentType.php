@@ -10,4 +10,3 @@ class EditEmploymentType extends EditConfigurationEntry
 {
     protected static string $resource = EmploymentTypeResource::class;
 }
-

@@ -28,7 +28,7 @@ class AttendanceManagement extends Page
         ]);
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.attendance.management.title');
     }

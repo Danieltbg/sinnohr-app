@@ -35,7 +35,7 @@ class MyAttendanceAllocation extends Page
         ]);
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.attendance.my_attendance.allocation.title');
     }

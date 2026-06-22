@@ -10,4 +10,3 @@ class ListWorkLocations extends ListConfigurationEntry
 {
     protected static string $resource = WorkLocationResource::class;
 }
-

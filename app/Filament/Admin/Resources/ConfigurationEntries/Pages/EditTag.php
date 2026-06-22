@@ -10,4 +10,3 @@ class EditTag extends EditConfigurationEntry
 {
     protected static string $resource = TagResource::class;
 }
-

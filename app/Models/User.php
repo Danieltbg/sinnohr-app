@@ -12,10 +12,10 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser
@@ -94,7 +94,7 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return match ($panel->getId()) {
-            'admin' => $this->role === RoleEnum::Admin,
+            'admin' => $this->isAdmin() || $this->hasAcceptedTeamLeadership(),
             'portal' => $this->role === RoleEnum::User,
             default => false,
         };
@@ -108,6 +108,13 @@ class User extends Authenticatable implements FilamentUser
     public function isUser(): bool
     {
         return $this->role === RoleEnum::User;
+    }
+
+    public function hasAcceptedTeamLeadership(): bool
+    {
+        return Team::where('leader_id', $this->id)
+            ->where('leader_status', 'accepted')
+            ->exists();
     }
 
     public function userAuth(): HasOne

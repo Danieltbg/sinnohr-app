@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TimeTracker\Teams\Pages;
 
 use App\Filament\Admin\Resources\TimeTracker\Teams\TeamResource;
-use App\Models\Team;
 use App\Models\User;
+use App\Notifications\TeamAssignmentNotification;
 use App\Notifications\TeamLeadershipInvitation;
-use Filament\Notifications\Notification;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 
@@ -21,42 +21,27 @@ class CreateTeam extends CreateRecord
         $team = $this->record;
         $team->load(['leader', 'members']);
 
-        $this->sendLeaderInvitation($team);
-        $this->sendMemberNotifications($team);
-    }
-
-    private function sendLeaderInvitation(Team $team): void
-    {
         $leader = $team->leader;
 
-        if ($leader === null) {
-            return;
+        if ($leader !== null) {
+            NotificationFacade::sendNow($leader, new TeamLeadershipInvitation($team));
         }
 
-        NotificationFacade::sendNow($leader, new TeamLeadershipInvitation($team));
-    }
-
-    private function sendMemberNotifications(Team $team): void
-    {
-        $leader = $team->leader;
-        $members = $team->members;
-
-        $memberIds = $members->pluck('id')->toArray();
-        $leaderId = $leader?->id;
-
-        if ($leaderId !== null) {
-            $memberIds = array_diff($memberIds, [$leaderId]);
-        }
-
-        $memberUsers = User::whereIn('id', $memberIds)->get();
+        $memberIds = collect($team->members->pluck('id'))
+            ->merge(data_get($this->data, 'members', []))
+            ->filter()
+            ->unique()
+            ->values();
 
         $leaderName = $leader?->name ?? 'Unknown';
+        $members = User::whereIn('id', $memberIds)->get();
 
-        foreach ($memberUsers as $member) {
-            Notification::make()
-                ->title('Team Assignment')
-                ->body('You have been added to team '.$team->name.' led by '.$leaderName)
-                ->sendToDatabase($member, isEventDispatched: true);
+        if ($members->isNotEmpty()) {
+            NotificationFacade::sendNow($members, new TeamAssignmentNotification($team, $leaderName));
+
+            foreach ($members as $member) {
+                DatabaseNotificationsSent::dispatch($member);
+            }
         }
     }
 }

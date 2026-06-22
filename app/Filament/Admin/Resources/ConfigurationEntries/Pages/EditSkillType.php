@@ -10,4 +10,3 @@ class EditSkillType extends EditConfigurationEntry
 {
     protected static string $resource = SkillTypeResource::class;
 }
-

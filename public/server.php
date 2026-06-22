@@ -1,11 +1,12 @@
 <?php
 
 declare(strict_types=1);
+use App\Console\WindowsSafeServeCommand;
 
 /**
  * Router for PHP built-in server (Windows-safe, no stdout logging).
  *
- * @see \App\Console\WindowsSafeServeCommand
+ * @see WindowsSafeServeCommand
  */
 $publicPath = getcwd();
 

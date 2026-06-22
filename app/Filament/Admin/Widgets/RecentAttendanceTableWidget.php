@@ -24,7 +24,7 @@ class RecentAttendanceTableWidget extends TableWidget
 
     protected ?string $pollingInterval = '15s';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {

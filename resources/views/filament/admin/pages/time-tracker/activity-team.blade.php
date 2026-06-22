@@ -59,7 +59,7 @@
     <div class="bg-white dark:bg-gray-900 shadow-sm rounded-xl ring-1 ring-gray-950/5 dark:ring-white/10 p-4">
         <div class="flex flex-wrap items-center gap-4">
             @php $user = auth()->user() @endphp
-            @if ($user->isAdmin() && \App\Models\Team::where('leader_id', $user->id)->exists())
+            @if ($user->isAdmin() && \App\Models\Team::where('leader_id', $user->id)->where('leader_status', 'accepted')->exists())
             <div class="flex items-center gap-2">
                 <x-filament::input.wrapper>
                     <x-filament::input.checkbox wire:model.live="showAllUsers" label="Show all users (all teams)" />

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Filament;
 
 use App\Enums\RoleEnum;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -47,5 +48,23 @@ class PanelAccessTest extends TestCase
         ]);
 
         $this->actingAs($employee)->get('/portal')->assertOk();
+    }
+
+    public function test_accepted_team_leader_can_open_activity_team_page(): void
+    {
+        $leader = User::factory()->create([
+            'role' => RoleEnum::User,
+        ]);
+
+        Team::create([
+            'name' => 'Implementation Team',
+            'leader_id' => $leader->id,
+            'leader_status' => 'accepted',
+        ]);
+
+        $this->actingAs($leader)
+            ->get('/admin/time-tracker/activity-team')
+            ->assertOk()
+            ->assertSee('Activity Team');
     }
 }

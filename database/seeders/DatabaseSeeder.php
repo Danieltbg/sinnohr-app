@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\ConfigurationEntryTypeEnum;
 use App\Enums\EmployeeBadgeEnum;
 use App\Enums\RoleEnum;
-use App\Enums\ConfigurationEntryTypeEnum;
 use App\Models\ActivityPlan;
 use App\Models\EmployeeConfigurationEntry;
 use App\Models\EmployeeSkill;

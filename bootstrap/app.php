@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Console\WindowsSafeServeCommand;
+use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -32,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'role' => \App\Http\Middleware\EnsureRole::class,
+            'role' => EnsureRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -87,7 +88,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ], $exception->getStatusCode());
         });
 
-        $exceptions->render(function (\Throwable $exception, Request $request) {
+        $exceptions->render(function (Throwable $exception, Request $request) {
             if (! $request->is('api/*') || config('app.debug')) {
                 return null;
             }

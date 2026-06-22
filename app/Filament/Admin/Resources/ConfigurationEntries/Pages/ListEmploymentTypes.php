@@ -10,4 +10,3 @@ class ListEmploymentTypes extends ListConfigurationEntry
 {
     protected static string $resource = EmploymentTypeResource::class;
 }
-

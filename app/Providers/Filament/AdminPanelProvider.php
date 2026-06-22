@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\CustomLogin;
-use App\Livewire\Notifications\LeadershipInvitationListener;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -21,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->navigation(false)
             ->maxContentWidth(Width::Full)
-            ->databaseNotifications(livewireComponent: LeadershipInvitationListener::class)
+            ->databaseNotifications()
             ->unsavedChangesAlerts()
             ->renderHook(
                 PanelsRenderHook::TOPBAR_BEFORE,
@@ -68,6 +68,10 @@ class AdminPanelProvider extends PanelProvider
             )
             ->renderHook(
                 PanelsRenderHook::BODY_END,
+                fn (): string => Blade::render('@livewire(\'team-invitation-handler\')'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
                 fn (): HtmlString => new HtmlString(
                     <<<'HTML'
 <script>
@@ -80,6 +84,12 @@ document.addEventListener('click', function(e) {
     if (el && window.Alpine) {
         window.Alpine.$data(el)?.markAsRead?.();
     }
+});
+
+document.addEventListener('livewire:navigated', function() {
+    Livewire.on('reload-page', function() {
+        window.location.reload();
+    });
 });
 </script>
 HTML

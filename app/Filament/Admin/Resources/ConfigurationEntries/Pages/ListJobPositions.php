@@ -10,4 +10,3 @@ class ListJobPositions extends ListConfigurationEntry
 {
     protected static string $resource = JobPositionResource::class;
 }
-

@@ -12,7 +12,7 @@ class CreateActivityPlan extends CreateRecord
 {
     protected static string $resource = ActivityPlanResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.employees.configurations.activity_plans.create.title');
     }

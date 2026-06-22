@@ -14,7 +14,7 @@ class ListRoles extends ListRecords
 {
     protected static string $resource = RoleResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.settings.roles.title');
     }

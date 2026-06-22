@@ -16,7 +16,7 @@ class CreateDepartment extends CreateRecord
 
     protected static bool $canCreateAnother = true;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.employees.departments.create.title');
     }

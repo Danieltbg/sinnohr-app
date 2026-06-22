@@ -24,12 +24,12 @@ class EmployeeStatsWidget extends StatsOverviewWidget
 
     protected ?string $pollingInterval = '15s';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     /**
      * @var int | array<string, int|null>|null
      */
-    protected int | array | null $columns = [
+    protected int|array|null $columns = [
         'default' => 1,
         'sm' => 2,
         'lg' => 4,

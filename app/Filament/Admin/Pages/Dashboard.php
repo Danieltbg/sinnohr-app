@@ -38,7 +38,7 @@ class Dashboard extends BaseDashboard
         return __('filament.dashboard.navigation');
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.dashboard.title');
     }
@@ -82,7 +82,7 @@ class Dashboard extends BaseDashboard
     /**
      * @return int|array<string, int|null>
      */
-    public function getColumns(): int | array
+    public function getColumns(): int|array
     {
         return [
             'default' => 1,

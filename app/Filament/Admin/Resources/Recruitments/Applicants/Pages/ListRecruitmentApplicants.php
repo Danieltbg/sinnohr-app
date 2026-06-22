@@ -33,7 +33,7 @@ class ListRecruitmentApplicants extends ListRecords
         return parent::getTableQuery()?->with('jobPosition');
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.recruitments.applicants.title');
     }

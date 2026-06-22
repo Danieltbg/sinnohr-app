@@ -27,7 +27,7 @@ class SettingsGeneral extends Page
         return __('filament.settings.general.navigation');
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.settings.general.title');
     }

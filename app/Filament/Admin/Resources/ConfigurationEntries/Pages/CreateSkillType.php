@@ -10,4 +10,3 @@ class CreateSkillType extends CreateConfigurationEntry
 {
     protected static string $resource = SkillTypeResource::class;
 }
-

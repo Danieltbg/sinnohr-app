@@ -10,4 +10,3 @@ class ListTags extends ListConfigurationEntry
 {
     protected static string $resource = TagResource::class;
 }
-

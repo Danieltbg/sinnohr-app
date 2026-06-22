@@ -20,7 +20,7 @@ class ProjectChartWidget extends ChartWidget
 
     protected ?string $pollingInterval = '15s';
 
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 1,
         'xl' => 2,

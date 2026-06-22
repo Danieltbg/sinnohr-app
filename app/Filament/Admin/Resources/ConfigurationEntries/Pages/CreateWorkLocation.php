@@ -10,4 +10,3 @@ class CreateWorkLocation extends CreateConfigurationEntry
 {
     protected static string $resource = WorkLocationResource::class;
 }
-

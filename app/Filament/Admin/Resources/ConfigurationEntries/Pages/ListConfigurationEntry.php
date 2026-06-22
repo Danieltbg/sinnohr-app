@@ -28,7 +28,7 @@ abstract class ListConfigurationEntry extends ListRecords
         return array_merge(parent::getViewData(), $this->getConfigurationViewData());
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         /** @var BaseConfigurationEntryResource $resource */
         $resource = static::getResource();

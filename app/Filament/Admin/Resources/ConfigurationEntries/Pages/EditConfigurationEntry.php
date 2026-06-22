@@ -12,7 +12,7 @@ use Illuminate\Contracts\Support\Htmlable;
 
 abstract class EditConfigurationEntry extends EditRecord
 {
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.employees.configurations.entries.edit.title', [
             'name' => $this->getRecord()->name,

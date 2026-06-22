@@ -10,4 +10,3 @@ class ListSkillTypes extends ListConfigurationEntry
 {
     protected static string $resource = SkillTypeResource::class;
 }
-

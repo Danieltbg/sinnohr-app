@@ -14,7 +14,7 @@ class ListSettingsCompanies extends ListRecords
 {
     protected static string $resource = SettingsCompanyResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.settings.companies.title');
     }

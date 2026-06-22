@@ -10,4 +10,3 @@ class EditJobPosition extends EditConfigurationEntry
 {
     protected static string $resource = JobPositionResource::class;
 }
-

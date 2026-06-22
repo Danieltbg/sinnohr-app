@@ -10,4 +10,3 @@ class EditWorkLocation extends EditConfigurationEntry
 {
     protected static string $resource = WorkLocationResource::class;
 }
-

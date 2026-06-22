@@ -17,6 +17,7 @@ return [
         'employees' => 'Employees',
         'departments' => 'Departments',
         'activity_monitor' => 'Activity Monitor',
+        'activity_team' => 'Activity Team',
         'money_time' => 'Money Time',
         'reportings' => 'Reportings',
         'configurations' => 'Configurations',

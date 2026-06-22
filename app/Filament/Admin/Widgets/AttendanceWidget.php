@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Widgets;
 
 use App\Filament\Admin\Concerns\OnlyAdminCanViewWidget;
-use Modules\Dashboard\Services\AdminDashboardStatsService;
 use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
+use Modules\Dashboard\Services\AdminDashboardStatsService;
 
 class AttendanceWidget extends Widget
 {
@@ -19,7 +19,7 @@ class AttendanceWidget extends Widget
 
     protected ?string $pollingInterval = '15s';
 
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 1,
         'xl' => 2,

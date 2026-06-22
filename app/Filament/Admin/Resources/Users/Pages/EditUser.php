@@ -15,7 +15,7 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.employees.edit.title', ['name' => $this->getRecord()->name]);
     }

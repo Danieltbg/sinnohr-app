@@ -35,7 +35,7 @@ class ListActivityPlans extends ListRecords
         return parent::getTableQuery()?->with(['department', 'manager']);
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.employees.configurations.activity_plans.title');
     }

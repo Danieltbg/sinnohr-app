@@ -24,7 +24,7 @@ class ProjectSummaryWidget extends StatsOverviewWidget
 
     protected ?string $pollingInterval = '15s';
 
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 2,
         'xl' => 'full',
@@ -33,7 +33,7 @@ class ProjectSummaryWidget extends StatsOverviewWidget
     /**
      * @var int | array<string, int|null>|null
      */
-    protected int | array | null $columns = [
+    protected int|array|null $columns = [
         'default' => 1,
         'sm' => 2,
     ];

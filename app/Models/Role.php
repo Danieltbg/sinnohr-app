@@ -41,7 +41,6 @@ class Role extends Model
         ];
     }
 
-
     protected static function booted(): void
     {
         static::saving(function (Role $role): void {

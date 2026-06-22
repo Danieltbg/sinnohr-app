@@ -10,7 +10,7 @@ use Illuminate\Contracts\Support\Htmlable;
 
 abstract class CreateConfigurationEntry extends CreateRecord
 {
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         /** @var BaseConfigurationEntryResource $resource */
         $resource = static::getResource();

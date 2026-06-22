@@ -14,7 +14,7 @@ class ListSettingsUsers extends ListRecords
 {
     protected static string $resource = SettingsUserResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.settings.users.title');
     }

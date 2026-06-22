@@ -14,7 +14,7 @@ class ListSettingsCustomFields extends ListRecords
 {
     protected static string $resource = SettingsCustomFieldResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.settings.custom_fields.title');
     }

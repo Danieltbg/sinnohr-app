@@ -16,6 +16,12 @@ final class AdminAppLauncher
     public static function items(): array
     {
         return once(function (): array {
+            if (auth()->user()?->isAdmin() === false) {
+                return [
+                    self::moduleItem('activity_team', 'filament.admin.pages.time-tracker.activity-team', Heroicon::OutlinedUsers, '#0d9488', '#2dd4bf'),
+                ];
+            }
+
             return [
                 self::moduleItem('dashboard', self::DASHBOARD_ROUTE, Heroicon::OutlinedHome, '#0070F2', '#FDB421'),
                 self::moduleItem('company_management', 'filament.admin.pages.company-management', Heroicon::OutlinedBuildingOffice2, '#2563eb', '#fbbf24'),
@@ -48,6 +54,13 @@ final class AdminAppLauncher
             $groupKey = self::resolveTabGroupKey();
 
             $tabs = self::tabGroups()[$groupKey]['tabs'] ?? self::tabGroups()['dashboard']['tabs'];
+
+            if (auth()->user()?->isAdmin() === false) {
+                $tabs = array_values(array_filter(
+                    $tabs,
+                    fn (array $tab): bool => $tab[1] === 'filament.admin.pages.time-tracker.activity-team',
+                ));
+            }
 
             return array_map(
                 fn (array $tab): array => self::tabItem($tab[0], $tab[1]),
@@ -90,6 +103,7 @@ final class AdminAppLauncher
                     'filament.admin.resources.time-tracker.projects.index',
                     'filament.admin.resources.time-tracker.teams.index',
                     'filament.admin.pages.time-tracker.activity-monitor',
+                    'filament.admin.pages.time-tracker.activity-team',
                     'filament.admin.pages.time-tracker.money-time',
                 ],
                 'tabs' => [
@@ -101,6 +115,7 @@ final class AdminAppLauncher
                     ['time_tracker_teams', 'filament.admin.resources.time-tracker.teams.index'],
                     ['time_tracker_reports', 'filament.admin.pages.time-tracker.reports'],
                     ['activity_monitor', 'filament.admin.pages.time-tracker.activity-monitor'],
+                    ['activity_team', 'filament.admin.pages.time-tracker.activity-team'],
                     ['money_time', 'filament.admin.pages.time-tracker.money-time'],
                 ],
             ],

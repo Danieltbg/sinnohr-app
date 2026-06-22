@@ -30,7 +30,7 @@ class ListRecruitmentEmploymentTypes extends ListRecords
         return array_merge(parent::getViewData(), $this->getRecruitmentConfigurationViewData());
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return RecruitmentEmploymentTypeResource::entryType()->label();
     }

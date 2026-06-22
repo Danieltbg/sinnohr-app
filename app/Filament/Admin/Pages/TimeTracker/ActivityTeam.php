@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Pages\TimeTracker;
 
 use App\Filament\Admin\Navigation\AdminNavigation;
 use App\Livewire\LiveTimeTracker;
+use App\Models\Project;
 use App\Models\Team;
 use App\Models\TimeEntry;
 use App\Models\User;
@@ -113,6 +114,7 @@ class ActivityTeam extends Page
 
         return Team::with('leader')
             ->where('leader_id', $user->id)
+            ->where('leader_status', 'accepted')
             ->orderBy('name')
             ->get();
     }
@@ -120,10 +122,12 @@ class ActivityTeam extends Page
     public function getMemberSummaries(): array
     {
         $memberIds = $this->getScopeUserIds();
+        $projectIds = $this->getScopeProjectIds();
         $weekStart = Carbon::now('Asia/Jakarta')->startOfWeek();
         $weekEnd = Carbon::now('Asia/Jakarta')->endOfWeek();
 
         $durations = TimeEntry::whereIn('user_id', $memberIds)
+            ->whereIn('project_id', $projectIds)
             ->whereBetween('start_time', [$weekStart, $weekEnd])
             ->selectRaw('user_id, COALESCE(SUM(duration), 0) as total_seconds')
             ->groupBy('user_id')
@@ -168,9 +172,11 @@ class ActivityTeam extends Page
     public function getEntries()
     {
         $memberIds = $this->getScopeUserIds();
+        $projectIds = $this->getScopeProjectIds();
 
         $query = TimeEntry::with(['user', 'project'])
-            ->whereIn('user_id', $memberIds);
+            ->whereIn('user_id', $memberIds)
+            ->whereIn('project_id', $projectIds);
 
         if ($this->selectedUserId !== null && $this->selectedUserId !== 0 && $this->selectedUserId !== '') {
             $query->where('user_id', $this->selectedUserId);
@@ -209,7 +215,9 @@ class ActivityTeam extends Page
     {
         $user = auth()->user();
 
-        $teamIds = Team::where('leader_id', $user->id)->pluck('id');
+        $teamIds = Team::where('leader_id', $user->id)
+            ->where('leader_status', 'accepted')
+            ->pluck('id');
 
         if ($teamIds->isNotEmpty()) {
             $memberIds = DB::table('team_user')
@@ -241,5 +249,29 @@ class ActivityTeam extends Page
         }
 
         return [$user->id];
+    }
+
+    private function getScopeProjectIds(): array
+    {
+        $user = auth()->user();
+
+        if ($user->isAdmin() && $this->showAllUsers && empty($this->selectedTeamId)) {
+            return Project::pluck('id')->toArray();
+        }
+
+        if ($this->selectedTeamId !== null && $this->selectedTeamId !== 0 && $this->selectedTeamId !== '') {
+            $teamIds = [(int) $this->selectedTeamId];
+        } else {
+            $teamIds = Team::where('leader_id', $user->id)
+                ->where('leader_status', 'accepted')
+                ->pluck('id')
+                ->toArray();
+
+            if ($user->isAdmin() && empty($teamIds)) {
+                $teamIds = Team::pluck('id')->toArray();
+            }
+        }
+
+        return Project::whereIn('team_id', $teamIds)->pluck('id')->toArray();
     }
 }

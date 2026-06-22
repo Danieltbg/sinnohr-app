@@ -14,7 +14,7 @@ class ListSettingsTeams extends ListRecords
 {
     protected static string $resource = SettingsTeamResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('filament.settings.teams.title');
     }

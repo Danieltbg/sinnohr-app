@@ -17,6 +17,7 @@ return [
         'employees' => 'Karyawan',
         'departments' => 'Departemen',
         'activity_monitor' => 'Activity Monitor',
+        'activity_team' => 'Activity Team',
         'money_time' => 'Money Time',
         'reportings' => 'Laporan',
         'configurations' => 'Konfigurasi',

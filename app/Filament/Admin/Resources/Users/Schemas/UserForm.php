@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Resources\Users\Schemas;
 use App\Enums\EmployeeBadgeEnum;
 use App\Enums\RoleEnum;
 use App\Models\User;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -161,7 +162,7 @@ class UserForm
     }
 
     /**
-     * @return list<\Filament\Forms\Components\Component>
+     * @return list<Component>
      */
     private static function primaryFields(): array
     {
@@ -196,7 +197,7 @@ class UserForm
     }
 
     /**
-     * @return list<\Filament\Forms\Components\Component>
+     * @return list<Component>
      */
     private static function organizationFields(): array
     {
