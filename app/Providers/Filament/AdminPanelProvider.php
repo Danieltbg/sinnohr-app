@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\CustomLogin;
+use App\Livewire\Notifications\LeadershipInvitationListener;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -45,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->navigation(false)
             ->maxContentWidth(Width::Full)
-            ->databaseNotifications()
+            ->databaseNotifications(livewireComponent: LeadershipInvitationListener::class)
             ->unsavedChangesAlerts()
             ->renderHook(
                 PanelsRenderHook::TOPBAR_BEFORE,
@@ -92,6 +93,7 @@ HTML
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+            ->discoverLivewireComponents(in: app_path('Livewire'), for: 'App\\Livewire')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

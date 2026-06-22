@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TimeTracker\Teams\Pages;
 
 use App\Filament\Admin\Resources\TimeTracker\Teams\TeamResource;
+use App\Models\Team;
 use App\Models\User;
+use App\Notifications\TeamLeadershipInvitation;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 
 class EditTeam extends EditRecord
 {
@@ -24,15 +27,29 @@ class EditTeam extends EditRecord
         $team = $this->record;
         $team->load(['leader', 'members']);
 
+        $this->handleLeaderChange($team);
+        $this->sendMemberNotifications($team);
+    }
+
+    private function handleLeaderChange(Team $team): void
+    {
+        $leader = $team->leader;
+
+        if ($leader === null) {
+            return;
+        }
+
+        if ($team->wasChanged('leader_id') || $team->leader_status === 'pending') {
+            $team->update(['leader_status' => 'pending']);
+
+            NotificationFacade::sendNow($leader, new TeamLeadershipInvitation($team));
+        }
+    }
+
+    private function sendMemberNotifications(Team $team): void
+    {
         $leader = $team->leader;
         $members = $team->members;
-
-        if ($leader !== null) {
-            Notification::make()
-                ->title('Team Leadership')
-                ->body('You have been assigned as the leader of team: '.$team->name)
-                ->sendToDatabase($leader);
-        }
 
         $memberIds = $members->pluck('id')->toArray();
         $leaderId = $leader?->id;
@@ -49,7 +66,7 @@ class EditTeam extends EditRecord
             Notification::make()
                 ->title('Team Assignment')
                 ->body('You have been added to team '.$team->name.' led by '.$leaderName)
-                ->sendToDatabase($member);
+                ->sendToDatabase($member, isEventDispatched: true);
         }
     }
 }

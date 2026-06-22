@@ -14,6 +14,7 @@ class Team extends Model
     protected $fillable = [
         'name',
         'leader_id',
+        'leader_status',
     ];
 
     public function leader(): BelongsTo

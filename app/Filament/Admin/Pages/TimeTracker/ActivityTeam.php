@@ -57,7 +57,9 @@ class ActivityTeam extends Page
 
         return $user instanceof User && (
             $user->isAdmin() ||
-            Team::where('leader_id', $user->id)->exists()
+            Team::where('leader_id', $user->id)
+                ->where('leader_status', 'accepted')
+                ->exists()
         );
     }
 
