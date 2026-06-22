@@ -1,11 +1,9 @@
 <x-filament-panels::page>
-    <div class="space-y-6">
+    {{-- Ubah space-y-6 menjadi space-y-3 atau space-y-2 di sini --}}
+    <div class="space-y-3">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Timesheet</span>
-                </h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Track your work time, manage projects, and stay productive.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Track your work time, manage projects, and stay productive.</p>
             </div>
             <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-white/5 px-3 py-1.5">

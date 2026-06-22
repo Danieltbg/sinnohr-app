@@ -1,13 +1,5 @@
 <x-filament-panels::page>
     {{-- Header --}}
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Activity Team</span>
-            </h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Monitor time entries across your teams.</p>
-        </div>
-    </div>
 
     {{-- Member Weekly Summary Cards --}}
     @php $summaries = $this->getMemberSummaries() @endphp
