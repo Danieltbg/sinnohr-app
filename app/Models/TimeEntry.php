@@ -20,6 +20,7 @@ class TimeEntry extends Model
         'is_overtime',
         'tags',
         'date',
+        'approval_status',
     ];
 
     protected function casts(): array
@@ -32,7 +33,20 @@ class TimeEntry extends Model
             'is_overtime' => 'boolean',
             'date' => 'date',
             'tags' => 'array',
+            'approval_status' => 'string',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $entry) {
+            if (
+                $entry->is_overtime
+                && ! in_array($entry->approval_status, ['approved', 'rejected'], true)
+            ) {
+                $entry->approval_status = 'pending';
+            }
+        });
     }
 
     public function user(): BelongsTo

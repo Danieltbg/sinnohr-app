@@ -124,6 +124,7 @@
                 <th class="px-4 py-3 text-right font-medium text-gray-500 dark:text-gray-400">Duration</th>
                 <th class="px-4 py-3 text-center font-medium text-xs uppercase tracking-wider text-gray-500">Billable</th>
                 <th class="px-4 py-3 text-center font-medium text-xs uppercase tracking-wider text-gray-500">Overtime</th>
+                <th class="px-4 py-3 text-center font-medium text-xs uppercase tracking-wider text-gray-500">Status</th>
             </tr>
             </thead>
             <tbody>
@@ -205,10 +206,42 @@
                     </span>
                     @endif
                 </td>
+                <td class="px-4 py-3 text-center">
+                    @php $status = $entry->approval_status ?? 'approved' @endphp
+                    @if ($status === 'pending')
+                    <div class="flex items-center justify-center gap-1.5">
+                        <span class="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20">
+                            Pending
+                        </span>
+                        <x-filament::icon-button
+                            icon="heroicon-o-check-circle"
+                            color="success"
+                            size="xs"
+                            wire:click="approveOvertime({{ $entry->id }})"
+                            :tooltip="'Approve'"
+                        />
+                        <x-filament::icon-button
+                            icon="heroicon-o-x-circle"
+                            color="danger"
+                            size="xs"
+                            wire:click="rejectOvertime({{ $entry->id }})"
+                            :tooltip="'Reject'"
+                        />
+                    </div>
+                    @elseif ($status === 'approved')
+                    <span class="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20">
+                        Approved
+                    </span>
+                    @elseif ($status === 'rejected')
+                    <span class="inline-flex items-center rounded-full bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 text-[11px] font-medium text-rose-700 dark:text-rose-300 ring-1 ring-inset ring-rose-600/20">
+                        Rejected
+                    </span>
+                    @endif
+                </td>
             </tr>
             @empty
             <tr>
-                <td colspan="9" class="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
+                <td colspan="10" class="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
                     No time entries found for the selected filters.
                 </td>
             </tr>

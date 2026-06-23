@@ -97,7 +97,8 @@ class ActivityMonitor extends Page
 
     public function getEntries()
     {
-        $query = TimeEntry::with(['user', 'project']);
+        $query = TimeEntry::with(['user', 'project'])
+            ->where('approval_status', 'approved');
 
         // 1. Filter Berdasarkan Karyawan Terpilih
         if ($this->selectedUserId !== null && $this->selectedUserId !== 0 && $this->selectedUserId !== '') {
