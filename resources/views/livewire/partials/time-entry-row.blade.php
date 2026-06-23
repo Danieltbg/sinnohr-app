@@ -82,7 +82,7 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
             type="time"
             x-model="startTime"
             x-on:blur="saveTimes()"
-            class="w-[5rem] h-9 text-sm font-mono text-gray-700 dark:text-gray-300
+            class="w-[5.5rem] h-9 text-sm font-mono text-gray-600 dark:text-gray-400
        bg-gray-50 dark:bg-white/5
        border border-gray-200 dark:border-white/10
        hover:border-gray-300 dark:hover:border-white/20
@@ -97,7 +97,7 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
             type="time"
             x-model="endTime"
             x-on:blur="saveTimes()"
-            class="w-[5rem] text-xs font-mono text-gray-600 dark:text-gray-400
+            class="w-[5.5rem] text-xs font-mono text-gray-600 dark:text-gray-400
                        bg-gray-50 dark:bg-white/5
                        border border-gray-200 dark:border-white/10
                        hover:border-gray-300 dark:hover:border-white/20
@@ -158,8 +158,6 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
                 />
             </div>
         </div>
-
-
 
 
         {{-- Delete --}}
