@@ -35,7 +35,7 @@
             color: rgb(var(--gray-900));
         }
         .dark .mt-stat-value { color: rgb(var(--gray-100)); }
-+
+
         .mt-panel {
             border-radius: 12px;
             border: 0.5px solid rgb(var(--gray-200));

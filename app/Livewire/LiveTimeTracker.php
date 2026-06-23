@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Models\Project;
+use App\Models\Team;
 use App\Models\TimeEntry;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class LiveTimeTracker extends Component
@@ -85,7 +87,7 @@ class LiveTimeTracker extends Component
         $end = Carbon::now('Asia/Jakarta');
         $duration = (int) $start->diffInSeconds($end);
 
-        $project = Project::where('name', $this->selectedProject)->first();
+        $project = $this->scopedProjects()->where('name', $this->selectedProject)->first();
 
         TimeEntry::create([
             'user_id' => auth()->id(),
@@ -248,7 +250,7 @@ class LiveTimeTracker extends Component
             $grouped[$dateKey]['total_formatted'] = self::formatDuration($group['total']);
         }
 
-        $projectNames = Project::pluck('name')->toArray();
+        $projectNames = $this->scopedProjects()->pluck('name')->toArray();
 
         $filteredProjects = $this->projectSearch === ''
             ? $projectNames
@@ -261,6 +263,25 @@ class LiveTimeTracker extends Component
             'groupedEntries' => $grouped,
             'filteredProjects' => $filteredProjects,
         ]);
+    }
+
+    private function scopedProjects(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Project::whereIn('team_id', $this->getAllowedTeamIds());
+    }
+
+    private function getAllowedTeamIds(): array
+    {
+        $user = auth()->user();
+
+        $memberTeamIds = DB::table('team_user')
+            ->where('user_id', $user->id)
+            ->pluck('team_id');
+
+        $leaderTeamIds = Team::where('leader_id', $user->id)
+            ->pluck('id');
+
+        return $memberTeamIds->merge($leaderTeamIds)->unique()->toArray();
     }
 
     public static function formatDuration(int $seconds): string

@@ -146,32 +146,24 @@
                 </div>
 
                 {{-- Billable --}}
-                <button
-                    type="button"
+                <x-filament::icon-button
+                    icon="heroicon-o-banknotes"
+                    :color="$isBillable ? 'success' : 'gray'"
+                    size="sm"
                     wire:click="$toggle('isBillable')"
-                    @class([
-                        'flex items-center justify-center w-7 h-7 text-xs font-bold border rounded-lg transition-colors',
-                        'text-green-600 bg-green-50 border-green-300 dark:text-green-400 dark:bg-green-500/10 dark:border-green-500/30' => $isBillable,
-                        'text-gray-400 border-gray-200 hover:border-gray-300 dark:text-gray-500 dark:border-white/10 dark:hover:border-white/20' => ! $isBillable,
-                    ])
-                    title="Billable"
-                >
-                    $
-                </button>
+                    :tooltip="'Toggle Billable'"
+                    class="rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                />
 
                 {{-- Overtime --}}
-                <button
-                    type="button"
+                <x-filament::icon-button
+                    icon="heroicon-o-clock"
+                    :color="$isOvertime ? 'warning' : 'gray'"
+                    size="sm"
                     wire:click="$toggle('isOvertime')"
-                    @class([
-                        'flex items-center justify-center w-7 h-7 text-xs font-bold border rounded-lg transition-colors',
-                        'text-amber-600 bg-amber-50 border-amber-300 dark:text-amber-400 dark:bg-amber-500/10 dark:border-amber-500/30' => $isOvertime,
-                        'text-gray-400 border-gray-200 hover:border-gray-300 dark:text-gray-500 dark:border-white/10 dark:hover:border-white/20' => ! $isOvertime,
-                    ])
-                    title="Overtime"
-                >
-                    <x-filament::icon icon="heroicon-o-clock" class="w-3.5 h-3.5" />
-                </button>
+                    :tooltip="'Toggle Overtime'"
+                    class="rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                />
             </div>
 
             {{-- Timer Display --}}
