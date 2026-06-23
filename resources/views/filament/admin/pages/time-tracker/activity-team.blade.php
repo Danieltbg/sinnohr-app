@@ -213,6 +213,7 @@
                         <span class="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20">
                             Pending
                         </span>
+                        @if ($this->canReviewOvertime($entry))
                         <x-filament::icon-button
                             icon="heroicon-o-check-circle"
                             color="success"
@@ -227,6 +228,7 @@
                             wire:click="rejectOvertime({{ $entry->id }})"
                             :tooltip="'Reject'"
                         />
+                        @endif
                     </div>
                     @elseif ($status === 'approved')
                     <span class="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20">

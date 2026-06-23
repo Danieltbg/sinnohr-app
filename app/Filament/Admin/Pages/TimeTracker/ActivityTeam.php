@@ -10,7 +10,10 @@ use App\Models\Project;
 use App\Models\Team;
 use App\Models\TimeEntry;
 use App\Models\User;
+use App\Notifications\OvertimeApprovalStatusNotification;
 use Carbon\Carbon;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
@@ -92,6 +95,22 @@ class ActivityTeam extends Page
     // OPTIMASI: Reset halaman saat admin men-toggle data user
     public function updatedShowAllUsers(): void
     {
+        $this->resetPage();
+    }
+
+    public function sortBy(string $column): void
+    {
+        if (! in_array($column, ['start_time', 'end_time'], true)) {
+            return;
+        }
+
+        if ($this->sortColumn === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortColumn = $column;
+            $this->sortDirection = 'asc';
+        }
+
         $this->resetPage();
     }
 
@@ -211,6 +230,40 @@ class ActivityTeam extends Page
         return LiveTimeTracker::formatDuration($seconds);
     }
 
+    public function approveOvertime(int $entryId): void
+    {
+        $entry = TimeEntry::with('user', 'project')->find($entryId);
+
+        if (! $this->canReviewOvertime($entry)) {
+            return;
+        }
+
+        $entry->update(['approval_status' => 'approved']);
+        $this->sendOvertimeStatusNotification($entry, 'approved');
+
+        Notification::make()
+            ->success()
+            ->title('Overtime Approved')
+            ->send();
+    }
+
+    public function rejectOvertime(int $entryId): void
+    {
+        $entry = TimeEntry::with('user', 'project')->find($entryId);
+
+        if (! $this->canReviewOvertime($entry)) {
+            return;
+        }
+
+        $entry->update(['approval_status' => 'rejected']);
+        $this->sendOvertimeStatusNotification($entry, 'rejected');
+
+        Notification::make()
+            ->danger()
+            ->title('Overtime Rejected')
+            ->send();
+    }
+
     private function getScopeUserIds(): array
     {
         $user = auth()->user();
@@ -273,5 +326,40 @@ class ActivityTeam extends Page
         }
 
         return Project::whereIn('team_id', $teamIds)->pluck('id')->toArray();
+    }
+
+    public function canReviewOvertime(?TimeEntry $entry): bool
+    {
+        if ($entry === null || ! $entry->is_overtime || $entry->approval_status !== 'pending') {
+            return false;
+        }
+
+        $user = auth()->user();
+
+        if (! $user instanceof User || $entry->user_id === $user->id) {
+            return false;
+        }
+
+        $teamId = $entry->project?->team_id;
+
+        if ($teamId === null) {
+            return false;
+        }
+
+        return Team::whereKey($teamId)
+            ->where('leader_id', $user->id)
+            ->where('leader_status', 'accepted')
+            ->whereHas('members', fn ($query) => $query->where('user.id', $entry->user_id))
+            ->exists();
+    }
+
+    private function sendOvertimeStatusNotification(TimeEntry $entry, string $status): void
+    {
+        if ($entry->user === null) {
+            return;
+        }
+
+        $entry->user->notify(new OvertimeApprovalStatusNotification($entry, $status));
+        DatabaseNotificationsSent::dispatch($entry->user);
     }
 }
