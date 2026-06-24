@@ -9,6 +9,10 @@ $projectColors = match ($projectName) {
 'No Project'       => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 'text-gray-400 dark:text-gray-500',   'dot' => 'bg-gray-300 dark:bg-gray-600'],
 default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 'text-gray-500 dark:text-gray-400',   'dot' => 'bg-gray-400 dark:bg-gray-500'],
 };
+
+$approvalStatus = $entry->approval_status;
+$isLocked = $entry->is_overtime && $approvalStatus === 'approved';
+$isRejected = $entry->is_overtime && $approvalStatus === 'rejected';
 @endphp
 
 <div
@@ -69,15 +73,28 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
     'text-gray-300 dark:text-gray-600 border border-gray-200 dark:border-white/10' => !$entry->is_billable,
     ])>$</span>
 
-    {{-- Col 4: Overtime Icon --}}
+    {{-- Col 4: Overtime Icon + Approval Status --}}
     @if ($entry->is_overtime)
     <span class="flex items-center justify-center w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0" title="Overtime">
             <x-filament::icon icon="heroicon-o-clock" class="w-3.5 h-3.5" />
         </span>
+    <span @class([
+        'inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0',
+        'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' => $approvalStatus === 'approved',
+        'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' => $approvalStatus === 'pending',
+        'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400' => $approvalStatus === 'rejected',
+    ])>
+        {{ ucfirst($approvalStatus) }}
+    </span>
     @endif
 
     {{-- Col 5: Time Range --}}
     <div class="flex items-center gap-1.5 shrink-0">
+        @if ($isLocked)
+        <span class="font-mono text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+            {{ $entry->start_time?->format('H:i') ?? '--' }}
+        </span>
+        @else
         <input
             type="time"
             x-model="startTime"
@@ -90,20 +107,28 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
        rounded-md px-2 py-1.5 outline-none transition-colors
        flex items-center"
         />
+        @endif
+
         <span class="text-xs text-gray-300 dark:text-gray-600 select-none">–</span>
 
         @if ($entry->end_time)
-        <input
-            type="time"
-            x-model="endTime"
-            x-on:blur="saveTimes()"
-            class="w-[5.5rem] text-xs font-mono text-gray-600 dark:text-gray-400
-                       bg-gray-50 dark:bg-white/5
-                       border border-gray-200 dark:border-white/10
-                       hover:border-gray-300 dark:hover:border-white/20
-                       focus:border-gray-400 dark:focus:border-white/30
-                       rounded-md px-1.5 py-1 outline-none transition-colors"
-        />
+            @if ($isLocked)
+            <span class="font-mono text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                {{ $entry->end_time?->format('H:i') ?? '--' }}
+            </span>
+            @else
+            <input
+                type="time"
+                x-model="endTime"
+                x-on:blur="saveTimes()"
+                class="w-[5.5rem] text-xs font-mono text-gray-600 dark:text-gray-400
+                           bg-gray-50 dark:bg-white/5
+                           border border-gray-200 dark:border-white/10
+                           hover:border-gray-300 dark:hover:border-white/20
+                           focus:border-gray-400 dark:focus:border-white/30
+                           rounded-md px-1.5 py-1 outline-none transition-colors"
+            />
+            @endif
         @else
         {{-- Running Badge --}}
         <span class="relative inline-flex items-center gap-1.5 rounded-full
@@ -128,6 +153,7 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
     {{-- Col 7: Actions (visible on hover) --}}
     <div class="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
 
+        @unless ($isLocked || $isRejected)
         {{-- Date Picker --}}
         <div class="relative" x-data="{ dpOpen: false }">
             <x-filament::icon-button
@@ -158,8 +184,9 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
                 />
             </div>
         </div>
+        @endunless
 
-
+        @unless ($isLocked)
         {{-- Delete --}}
         <x-filament::icon-button
             icon="heroicon-o-trash"
@@ -170,5 +197,6 @@ default            => ['bg' => 'bg-gray-100 dark:bg-white/5',       'text' => 't
             tooltip="Delete"
             class="rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition"
         />
+        @endunless
     </div>
 </div>

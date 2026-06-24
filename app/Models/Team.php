@@ -32,4 +32,13 @@ class Team extends Model
     {
         return $this->hasMany(Project::class);
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (self $team): void {
+            $team->projects()->each(function (Project $project): void {
+                $project->delete();
+            });
+        });
+    }
 }

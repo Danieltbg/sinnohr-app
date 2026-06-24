@@ -10,6 +10,7 @@ use App\Models\TimeEntry;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -148,6 +149,8 @@ class LiveTimeTracker extends Component
             'duration' => max((int) $start->diffInSeconds($end), 0),
         ]);
 
+        $this->notifyApprovalReset($entry);
+
         $this->dispatch('timer-stopped');
     }
 
@@ -167,14 +170,43 @@ class LiveTimeTracker extends Component
             'end_time' => Carbon::parse($newDateStr.' '.$entry->end_time->format('H:i:s'), 'Asia/Jakarta'),
         ]);
 
+        $this->notifyApprovalReset($entry);
+
         $this->dispatch('timer-stopped');
     }
 
     public function deleteEntry(string $entryId): void
     {
-        TimeEntry::where('id', $entryId)
+        $entry = TimeEntry::where('id', $entryId)
             ->where('user_id', auth()->id())
-            ->delete();
+            ->first();
+
+        if ($entry === null) {
+            return;
+        }
+
+        if ($entry->is_overtime && in_array($entry->approval_status, ['approved', 'rejected'], true)) {
+            Notification::make()
+                ->title('Cannot delete')
+                ->body('This overtime entry has been '.$entry->approval_status.'. You cannot delete it.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $entry->delete();
+    }
+
+    private function notifyApprovalReset(TimeEntry $entry): void
+    {
+        if ($entry->is_overtime && $entry->approval_status === 'pending' && $entry->wasChanged('approval_status')) {
+            Notification::make()
+                ->title('Approval reset')
+                ->body('Changes saved. This overtime entry needs re-approval from your leader.')
+                ->warning()
+                ->send();
+        }
     }
 
     public function restartEntry(string $entryId): void
@@ -265,7 +297,7 @@ class LiveTimeTracker extends Component
         ]);
     }
 
-    private function scopedProjects(): \Illuminate\Database\Eloquent\Builder
+    private function scopedProjects(): Builder
     {
         return Project::whereIn('team_id', $this->getAllowedTeamIds());
     }

@@ -40,10 +40,7 @@ class TimeEntry extends Model
     protected static function booted(): void
     {
         static::saving(function (self $entry) {
-            if (
-                $entry->is_overtime
-                && ! in_array($entry->approval_status, ['approved', 'rejected'], true)
-            ) {
+            if ($entry->is_overtime && ! $entry->isDirty('approval_status')) {
                 $entry->approval_status = 'pending';
             }
         });
